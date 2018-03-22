@@ -1,0 +1,78 @@
+1)  types.x : nome del file con la struttura
+2)  rpcgen -o types.c -c types.x  # generate types.c
+3)  rpcgen -o types.h -h types.x  # generate types.h
+4)  #include "types.h" (client e server)
+
+
+1)   La struttura si chiama Request !!!
+
+	enum operation { ENC = 0, DEC = 1 };
+   	struct Request { operation op; float data<>; };
+
+4)      Ogni metodo si basa sulla Request !!!
+
+	#include "types.h"
+	int main(...) {...
+	XDR xdrs; 
+	float *v = malloc(...); 
+	Request req;
+	xdrmem_create(&xdrs, buf, BUFSIZE, XDR_ENCODE);
+	// Fill up structure:
+	req.op = ENC; 
+	req.data_len = mylen; 
+	req.data_val = v;
+	if (!xdr_Request(&xdrs, &req)) { printf("Error"); }
+	send(sock, buf, xdr_getpos(&xdrs), 0);
+	... }
+
+
+Devo capire quali funzioni sono chiamate all'interno di altre.
+E quale funzione è quella madre di tutte che chiama tutti (es. xdr_message).
+---------------------------------------------------------------------
+gcc -g -Wall -DTRACE -o client client.c errlib.c sockwrap.c ftp.c
+
+./client 127.0.0.1 1500
+---------------------------------------------------------------------
+gcc -g -Wall -DTRACE -o server server.c errlib.c sockwrap.c ftp.c
+
+./server_test -a 1500
+
+----------------------------------------------------------------------
+
+In order to use Valgrind:
+
+1) chmod a+x ./myCfile (server or client)
+2) valgrind ./myCfile parameters
+
+controlla parametri segnalati sulle slide per identificare possibili memory leakage
+--> All heap blocks were freed -- no leaks are possible
+--> ALL RIGHT DUDE
+
+
+PERMISSION RUN C APP
+
+chmod -R 777 directory
+----------------------------------------------------------
+
+ valgrind --leak-check=full --show-leak-kinds=all
+ 
+ 
+----------------------------------------------------------
+DEBUG:
+
+gdb program
+
+(gdb) b #line/fucntion name
+(gdb) r args
+(gdb) s         (step)
+(gdb) n
+(gdb) bt  	(backtrace info actual position)
+(gdb) q
+----------------------------------------------------------
+
+
+
+
+
+
+

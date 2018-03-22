@@ -1,0 +1,30 @@
+Indice Dei Laboratori
+
+----------------------------------------------------------
+LAB1
+----------------------------------------------------------
+
+Es 1.1 server base
+ES 1.2 client TCP base
+Es 1.3 client TCP due numeri ritorno somma
+Es 1.4 client/server UDP Echo
+
+----------------------------------------------------------
+LAB2
+----------------------------------------------------------
+
+Es 2.1 client 1.4 UDP con timeout
+ES 2.2 server 1.4 UDP 10 client max, con token max 3
+Es 2.3 server TCP iterativo + client tcp  con FTP
+Es 2.4 client/server TCP due numeri ritono somma, con XDR
+
+----------------------------------------------------------
+LAB3
+----------------------------------------------------------
+
+Es 3.1 server TCP 2.3 concorrente FTP: ogni richiesta processo figlio
+ES 3.2 server TCP 2.3 interfaccia utente con TYPE AHEAD
+Es 3.3 server TCP 3.1 ma con preforking, figli sul socket passivo in attesa
+Es 3.4 client/server TCP FTP con struttura dati XDR fornita
+
+----------------------------------------------------------

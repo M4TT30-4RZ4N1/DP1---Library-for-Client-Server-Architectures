@@ -1,0 +1,63 @@
+
+nella cartella server aprire terminale
+
+gcc -g -Wall -DTRACE -o server_test server_test.c errlib.c sockwrap.c
+
+./server_test -a 1500
+
+-a per la rappresentazione dei dati in ASCII
+-x per la rappresentazione dei dati tramite XDR
+
+non ci possono essere due server in attesa sulla stessa porta
+
+--------------------------------
+
+apro nuovo terminale (client)
+
+./client 127.0.0.1 1500
+
+ctrl + alt gr + ]   q invio
+
+oppure quit
+
+--------------------------------
+wireshark
+
+destro follow tcp
+show as :  dump esadecimale (per capire quali dati sono effettivamente passati)
+
+--------------------------------
+per vedere tutti i processi in ascolto sulle varie porte sul sistema locale
+
+netstat -atnp (per tcp) o -aunp (per udp)
+
+(vedo anche la mia connessione con indirizzo di loopback)
+-------------------------------------
+
+BISOGNA PROGRAMMARE IL SERVER IN MANIERA TALE CHE IN CASO DI ERRORI NON TERMINI
+MA OGNI FUNZIONE IN CASO DI ERRORE PORTA ALLA TERMINAZIONE DEL SERVER
+
+------------------------------------
+
+ATTENZIONE SICUREZZA, CONCORRENZA!!!
+
+
+--------------------------------------
+
+COMPILAZIONE PROGRAMMA.C
+
++ terminale nella cartella dei file.
+
+gcc -g -Wall -DTRACE -o server server.c errlib.c sockwrap.c
+
+gcc -g -Wall -DTRACE -o client client.c errlib.c sockwrap.c
+
+esecuzione:
+
+./server formato porta
+./client formato porta
+
+---------------------------------------
+
+
+

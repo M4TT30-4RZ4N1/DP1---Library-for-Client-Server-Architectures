@@ -1,0 +1,317 @@
+QUANDO INVIO DATI TRA CLIENT/SERVER
+SIA IN UDP(SOCK_DGRAM) SIA IN TCP (SOCK_STREAM)
+IL PROTOCOLLO DEVE ESSERE SIMMETRICO
+CIO' CHE INVIO DEVE ESSERE RICEVUTO IN UN BUFFER DELLE STESSE DIMENSIONI ESTRAENDO VOLTA PER VOLTA LE COSE IN PARALLELO A COME ERANO STATE INSERITE.
+
+UDP -> SENDTO / RECVFROM
+TCP -> WRITE/READ
+
+//backlog: #socket queue length
+listen(socket,backlog);
+
+sendn -> writen possibile sempre
+readn -> solo se è conosciuto il numero di byte da leggere, è bloccante non usarla usa read
+-------------------------------------------------------------------------------------------------------
+
+ OPERAZIONI SOCKET/FILE TCP
+ 
+ 	writen(mysocket, buf, nread);  //PRECISO IN INVIO, nread potrebbe essere il numero di byte letti da file
+ 				       // comunque la dimensione deve essere precisa!!!
+ 				       
+ 	nread=read(mysocket,buf,BYTES);//TOLLERANTE IN RICEZIONE, posso ricevere anche meno di BYTES
+	if(nread<0){
+		printf("(%s) - error read bytes\n",progname);
+		return -1;
+	}else if(nread==0){
+		printf("(%s) - no more bytes possible to read\n",progname);
+		break;
+	}else{ // nread>0
+		printf("(%s) - read: %lu bytes\n",progname,nread);
+		//OPERAZIONE SUI BYTES LETTI
+	}
+	
+//ESEMPIO LETTURA DI UN FILE E INVIO A BLOCCHI MB
+counter=0;
+while((nread = fread(buf, sizeof(char), MB, fp)) > 0) {
+		counter+=nread;
+		writen(mysocket, buf, nread);
+		if(counter>=file_size){
+			break;
+		}
+	}
+---------------------------------------------------------------------------------------------------------
+
+quando invio INTERI -> BIG-ENDIAN
+
+nella rete viaggiano in formato BIG_ENDIAN ... quindi:
+
+1) quando INVIO li devo trasformare in NETWORK BYTE ORDER
+
+	#include <netinet/in.h>
+	uint16_t net_x= htons(uint16_t host_x); /*host-to-network short*/
+	uint32_t net_x= htonl(uint32_t host_x); /*host-to-network long*/
+	
+2) quando RICEVO li devo traformare in BYTE ORDER
+
+	#include <netinet/in.h>
+	uint16_t host_x= ntohs(uint16_t net_x); /*network-to-host short*/
+	uint32_t host_x= ntohl(uint32_t net_x); /*network-to-host long*/
+-----------------------------------------------------------------
+The % Format Specifiers
+
+The % specifiers that you can use in ANSI C are:
+
+Usual variable type Display
+
+%c char single character
+
+%d (%i) int signed integer
+
+%e (%E) float or double exponential format
+
+%f float or double signed decimal
+
+%g (%G) float or double use %f or %e as required
+
+%o int unsigned octal value
+
+%p pointer address stored in pointer
+
+%s array of char sequence of characters
+
+%u int unsigned decimal
+
+%x (%X) int unsigned hex value
+-----------------------------------------------------------------
+// testValue
+unsigned long long testValue     = 0xFFFFFFFFFFFFFFFF; // 18446744073709551615
+
+// 1 byte -> [0-255] or [0x00-0xFF]
+uint8_t         number8     = testValue; // 255
+unsigned char    numberChar    = testValue; // 255
+
+// 2 bytes -> [0-65535] or [0x0000-0xFFFF]
+uint16_t         number16     = testValue; // 65535
+unsigned short    numberShort    = testValue; // 65535
+
+// 4 bytes -> [0-4294967295] or [0x00000000-0xFFFFFFFF]
+uint32_t         number32     = testValue; // 4294967295
+unsigned int     numberInt    = testValue; // 4294967295
+
+ // 8 bytes -> [0-18446744073709551615] or [0x0000000000000000-0xFFFFFFFFFFFFFFFF]
+uint64_t             number64         = testValue; // 18446744073709551615
+unsigned long long     numberLongLong    = testValue; // 18446744073709551615
+-------------------------------------------------------------
+NB quando invio byte con un buffer es client, il server ha un ordine inverso di azioni
+
+... (1) dati ricevuti da tastiera o da argv[]....
+
+... (2) converto i dati in NETWORK BYTE ORDER...
+
+memset(buf,0,MAXBUFL);  //pulisco buffer
+memcpy(buf,&x,4);       //popolo il buffer usando puntatore, ex x=> unsigned int (4 byte)
+memcpy(buf+4,&y,4);     //devo spostare il puntatore del buffer se ne ho un altro da inserire
+
+sendto( .... ,size= dimensione del buffer effettiva, me lo dice il testo, conto i byte inseriti con un contatore...)
+
+
+recvfrom(...., size=dimensione del buffer effettiva data dal protocollo, il formato...)
+memcpy(&x,buf,4);       //estraggo dal buffer (stesso ordine) usando puntatore, ex x=> unsigned int (4 byte)
+memcpy(&y,buf+4,4);     //devo spostare il puntatore del buffer se ne ho un altro da estrarre
+
+... (3) dati ricevuti dal socket, ora li converto in BYTE ORDER ...
+
+... (4) operazioni sui dati veri ...
+
+---------------------------------------------------------------------------------------------------------------
+IPV4 - STRING
+
+//converto indirizzo stringa in ipv4 network byte order
+int net_addr=inet_aton(const char *str, struct in_addr *addr);
+
+//converto indirizzo ipv4 da network byte order in stringa
+char address[MAXADDR];
+address= inet_ntoa(struct in_addr addr);
+
+-------------------------------------------------------------
+
+PER CONVERTIRE INDIRIZZI IPV4/IPV6 <-> NETWORK BYTE ORDER
+
+#include <arpa/inet.h>
+
+//family: AF_INET/AF_INET6
+// ottenuta da mysockaddr->sa_family;
+
+//trasformo stringa addr(indirizzo dotted) -> in network byte order nel buf (quello di invio, dimensione >=128 ) 
+//ritorna-> successo:1, indirizzo_formato_non_corretto:0, argm_unknown:-1
+int inet_pton(int family, const char *restrict addr, void*restrict buf);
+
+ex. control = inet_pton(AF_INET6, address_ipv6, buf);
+//POI INVIO BUF
+
+//trasformo l'indirizzo network byte order nel buf-> in un indirizzo(dotted) nella stringa addr
+//size buf>= 128 per ipv4/ipv6
+//ritorna-> successo: puntatore alla stringa indirizzo, errore:NULL
+const char *inet_ntop(int family, const void *restrict buf, char *restrict addr, socklen_t size_buf);
+
+//RICEVO BUF
+ex. pointer = inet_ntop(AF_INET6, buf, address, sizeof(buf));
+
+--------------------------------------------------------------------------------
+
+int shutdown (int socket, int how);
+
+how:
+
+SHUT_RD disabilita solo la ricezione di dati dal socket
+SHUT_WR disabilita solo l’invio di dati sul socket
+SHUT_RDWR disabilita entrambe le operazioni sul socket
+
+------------------------------------------------------------
+SELECT- MULTIPLEXING
+
+fd_set readlist, writelist, exceptlist;
+struct timeval timeout;
+timeout.tv_sec= 120; //seconds
+timeout.tv_usec= NULL;
+
+//azzero la lista
+FD_ZERO(&list);
+
+//elimino un socket da una lista
+FD_CLR( mysocket, &list); 
+
+//assegno socket a una lista
+FD_SET(mysocket,&list);
+FD_SET(fileno(stdin), &readlist);  // Set stdin, fileno(stdin) ritorna il file descriptor dello stdin
+
+//controllo se è settato
+if(FD_ISSET(mysocket,&list)){ ... }
+
+//LO USO PER NON BLOCCARMI IN RICEZIONE NORMALMENTE
+
+if ((n = select(FD_SETSIZE, &readlist, NULL, NULL, &timeout)) == -1)
+	err_fatal("select() failed");
+if (n>0) { //... FD_ISSET... actions...}
+else{ // ... TIMEOUT EXPIRED ...}
+
+
+------------------------------------------------------------
+
+GETADDRRINFO - portable
+
+SOCKET clientConnectedTCP (char *host, char *serv) {
+
+	struct addrinfo hints, *res, *res0;
+	int error, s; 
+	char *cause;
+	
+	memset(&hints, 0, sizeof(hints));
+	hints.ai_family = AF_UNSPECT; 
+	hints.ai_socktype = SOCK_STREAM;
+	
+	error = getaddrinfo(host, serv, &hints, &res0);
+	if(error!=0){ return -1; }
+				
+		s = -1;
+		for (res = res0; res!=NULL; res = res->ai_next) {
+			s = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
+			
+			if (s < 0) {
+				continue;
+			}
+			if (connect(s, res->ai_addr, res->ai_addrlen) < 0) {
+				close(s);
+				s = -1;
+				continue;
+			}
+			
+			break; /* okay we got one */
+		}
+		freeaddrinfo(res0); /* free list of structures */
+		
+		
+		return s;
+}
+	
+int serverConnectedTCP (char *serv) {
+
+	struct addrinfo hints, *res, *res0;
+	int error, s; 
+
+	memset(&hints, 0, sizeof(hints));
+	hints.ai_family = AF_UNSPEC; 
+	hints.ai_socktype = SOCK_STREAM;
+	
+	error = getaddrinfo(NULL, serv, &hints, &res0);
+	if(error!=0){ return -1; }
+				
+		s = -1;
+		for (res = res0; res!=NULL; res = res->ai_next) {
+			s = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
+			
+			if (s < 0) {
+				continue;
+			}
+			if (bind(s, res->ai_addr, res->ai_addrlen) != 0) {
+				close(s);
+				s = -1;
+				continue;
+			}
+			
+			break; /* okay we got one */
+		}
+		freeaddrinfo(res0); /* free list of structures */
+		
+		
+		return s;
+}
+--------------------------------------------------------------------------------------------------------------
+
+The fopen() function opens the file whose name is the string pointed
+       to by pathname and associates a stream with it.
+
+       The argument mode points to a string beginning with one of the
+       following sequences (possibly followed by additional characters, as
+       described below):
+
+       r      Open text file for reading.  The stream is positioned at the
+              beginning of the file.
+
+       r+     Open for reading and writing.  The stream is positioned at the
+              beginning of the file.
+
+       w      Truncate file to zero length or create text file for writing.
+              The stream is positioned at the beginning of the file.
+
+       w+     Open for reading and writing.  The file is created if it does
+              not exist, otherwise it is truncated.  The stream is
+              positioned at the beginning of the file.
+
+       a      Open for appending (writing at end of file).  The file is
+              created if it does not exist.  The stream is positioned at the
+              end of the file.
+
+       a+     Open for reading and appending (writing at end of file).  The
+              file is created if it does not exist.  The initial file
+              position for reading is at the beginning of the file, but
+              output is always appended to the end of the file.
+
+       The mode string can also include the letter 'b' either as a last
+       character or as a character between the characters in any of the two-
+       character strings described above.  This is strictly for
+       compatibility with C89 and has no effect; the 'b' is ignored on all
+       POSIX conforming systems, including Linux.  (Other systems may treat
+       text files and binary files differently, and adding the 'b' may be a
+       good idea if you do I/O to a binary file and expect that your program
+       may be ported to non-UNIX environments.)
+       
+       RETURN VALUE NULL= ERROR
+
+
+
+
+
+
+
+        

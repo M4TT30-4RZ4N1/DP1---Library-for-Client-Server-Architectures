@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type">
+    <title>Esercizio 5.2.4</title>
+    
+    <script>
+      function natale() {
+	var anno = parseInt(document.getElementById("anno").value);
+	
+	var dayCount = 0; // dayCount = numero di giorni dal 1º gennaio 1970 al 25 dicembre <anno> compresi
+	
+	for (var i = 1970; i <= anno; ++i) {
+	  dayCount += 365;
+	  
+	  if ((i % 4 == 0) && ((i % 100 != 0) || (i % 400 == 0)))
+	    // L'anno è bisestile
+	    dayCount += 1;
+	}
+	
+	dayCount -= 6;
+	
+	// 1º gennaio 1970 = giovedì
+	var resto = dayCount % 7;
+	var giornoSettimana;
+	
+	switch (resto) {
+	  case 0:
+	    giornoSettimana = "mercoledì";
+	    break;
+	    
+	  case 1:
+	    giornoSettimana = "giovedì";
+	    break;
+	  
+	  case 2:
+	    giornoSettimana = "venerdì";
+	    break;
+	    
+	  case 3:
+	    giornoSettimana = "sabato";
+	    break;
+	    
+	  case 4:
+	    giornoSettimana = "domenica";
+	    break;
+	    
+	  case 5:
+	    giornoSettimana = "lunedì";
+	    break;
+	    
+	  case 6:
+	    giornoSettimana = "martedì";
+	}
+	
+	document.getElementById("natale").value = giornoSettimana;
+      }
+    </script>
+  </head>
+  
+  <body>
+    <div>
+      Anno (&ge; 1970): <input type="text" id="anno" onchange="javascript:natale();"><br />
+      Natale: <input type="text" disabled id="natale">
+    </div>
+  </body>
+</html>

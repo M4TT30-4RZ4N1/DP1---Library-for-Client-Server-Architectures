@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type">
+    <title>Esercizio 5.1.5</title>
+  </head>
+  
+  <body>
+    <script>
+      var x = prompt("Inserire un numero maggiore o uguale a 1:");
+	
+if(x<1){
+	alert("Input non valido!!!");
+}
+else{
+    
+      document.write("<table><tr><th>Base</th><th>Quadrato</th><th>Cubo</th></tr>");
+      for (var y = 1; y <= x; ++y) {
+	var quadrato = Math.pow(y, 2);
+	var cubo = Math.pow(y, 3);
+	document.write("<tr><td>" + y + "</td><td>" + quadrato + "</td><td>" + cubo + "</td></tr>");
+      }
+      document.write("</table>");
+
+}	
+    </script>
+  </body>
+</html>

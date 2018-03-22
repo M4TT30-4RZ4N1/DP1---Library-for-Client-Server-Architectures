@@ -1,0 +1,38 @@
+TCP
+----------------------------------------------------------
+
+
+SERVER:  
+
+-CREO SOCKET
+-BIND
+-LISTEN
+-ACCEPT
+
+-(LEGGO SCRIVO CON SEND/RECV + SERVIZIO)
+
+
+CLIENT:
+
+-CREO SOCKET
+-CONNECT
+-LEGGO SCRIVO CON SEND/RECV 
+
+---------------------------------------------------------
+UDP
+---------------------------------------------------------
+
+SERVER:  
+
+-CREO SOCKET
+-BIND
+
+(PIU FLUSSI DI DATAGRAM DA CLIENT DIVERSI)
+-(LEGGO SCRIVO CON SEND/RECV + SERVIZIO)
+
+
+
+
+
+
+

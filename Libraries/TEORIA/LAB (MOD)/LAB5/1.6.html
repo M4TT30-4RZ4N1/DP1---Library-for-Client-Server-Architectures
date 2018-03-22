@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type">
+    <title>Esercizio 5.1.6</title>
+  </head>
+  
+  <body>
+    <script>
+      var N = prompt("Inserire un numero maggiore o uguale a 1:");
+
+if(N>0){
+      document.write("<table><tr><th></th>");
+      for (var i = 1; i <= N; ++i) {
+	document.write("<th>" + i + "</th>");
+      }
+      document.write("</tr>");
+
+      for (var j = 1; j <= N; ++j) {
+	document.write("<tr><th>" + j + "</th>");
+	for (var i = 1; i <= N; ++i) {
+	  document.write("<td>" + i * j + "</td>");
+	}
+	document.write("</tr>");
+      }
+      document.write("</table>");
+}
+else{
+	alert("Input Non Valido!!!");
+}
+    </script>
+  </body>
+</html>

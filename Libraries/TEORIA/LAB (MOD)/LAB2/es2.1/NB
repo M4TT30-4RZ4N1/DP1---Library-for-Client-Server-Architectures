@@ -1,0 +1,3 @@
+Ho commentato la linea della send del server.
+In questo modo simulo il malfunzionamento di un server che non risponderà mai al client.
+Questo serve a testare che il client aspetti la risposta del server con 5 timeout e poi termini.

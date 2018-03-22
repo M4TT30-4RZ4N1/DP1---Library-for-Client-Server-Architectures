@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type">
+    <title>Esercizio 5.2.3</title>
+    
+    <script>
+      function somma() {
+	document.getElementById("somma").value = parseFloat(document.getElementById("numero1").value) + parseFloat(document.getElementById("numero2").value);
+      }
+    </script>
+  </head>
+  
+  <body>
+    <div>
+      Primo numero > 0: <input type="text" id="numero1"><br />
+      Secondo numero > 0: <input type="text" id="numero2"><br />
+      <button onclick="javascript:somma();">Calcola somma</button><br />
+      Risultato: <input type="text" disabled id="somma">
+    </div>
+  </body>
+</html>

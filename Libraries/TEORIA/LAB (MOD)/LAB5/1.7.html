@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type">
+    <title>Esercizio 5.1.7</title>
+  </head>
+  
+  <body>
+    <script>
+      var array = [];
+      var i = -1;
+      do {
+	i++;
+	array[i] = prompt("Inserire un numero:");
+      } while(array[i] !== "fine");
+      
+      var somma = 0;
+      var count=0;
+      for (var indice in array) {
+	if (isNaN(array[indice])) {
+	
+	}
+	else{
+	  document.write("<p>" + array[indice] + "</p>");
+	  somma += parseFloat(array[indice]);
+	  count++;
+	}
+      }
+      document.write("<p>media: " +somma / (count) + "</p>");
+    </script>
+  </body>
+</html>

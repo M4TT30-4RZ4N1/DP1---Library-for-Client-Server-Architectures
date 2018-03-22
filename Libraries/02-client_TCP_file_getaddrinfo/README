@@ -1,0 +1,6 @@
+Questa versione della getaddrinfo funziona con TCP,
+serve a risolvere il nome del server sia passando un indirizzo puntato, sia un alias.
+SE VUOI UN UDP CAMBIA IN SOCK_DGRAM, in quel caso la connect non crea una connessione
+NB sei un client quindi niente bind!!!
+Cambia solo la sezione del protocollo.
+

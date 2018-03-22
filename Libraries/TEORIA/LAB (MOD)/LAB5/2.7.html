@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type">
+    <title>Esercizio 5.2.7</title>
+    
+    <script>
+      function calcola() {
+	var floppy = parseInt(document.getElementById("floppy").value);
+	var cd = parseInt(document.getElementById("cd").value);
+	var dvd = parseInt(document.getElementById("dvd").value);
+	
+	var costo = floppy * 0.5 + cd * 1.0 + dvd * 2.0;
+	document.getElementById("risultato").value = costo + "€";
+      }
+      
+      function reimposta() {
+	document.getElementById("risultato").value = "";
+	document.getElementById("floppy").selectedIndex = -1;
+	document.getElementById("cd").selectedIndex = -1;
+	document.getElementById("dvd").selectedIndex = -1;
+      }
+    </script>
+  </head>
+  
+  <body>
+    <div>
+      Disco floppy:
+      <select id="floppy">
+	<option value="0">0</option>
+	<option value="1">1</option>
+	<option value="2">2</option>
+	<option value="3">3</option>
+	<option value="4">4</option>
+	<option value="5">5</option>
+	<option value="6">6</option>
+	<option value="7">7</option>
+	<option value="8">8</option>
+	<option value="9">9</option>
+	<option value="10">10</option>
+      </select><br />
+      
+      CD-R:
+      <select id="cd">
+	<option value="0">0</option>
+	<option value="1">1</option>
+	<option value="2">2</option>
+	<option value="3">3</option>
+	<option value="4">4</option>
+	<option value="5">5</option>
+	<option value="6">6</option>
+	<option value="7">7</option>
+	<option value="8">8</option>
+	<option value="9">9</option>
+	<option value="10">10</option>
+      </select><br />
+      
+      DVD-R:
+      <select id="dvd">
+	<option value="0">0</option>
+	<option value="1">1</option>
+	<option value="2">2</option>
+	<option value="3">3</option>
+	<option value="4">4</option>
+	<option value="5">5</option>
+	<option value="6">6</option>
+	<option value="7">7</option>
+	<option value="8">8</option>
+	<option value="9">9</option>
+	<option value="10">10</option>
+      </select><br />
+      
+      <button onclick="javascript:calcola();">Calcola costo</button>
+      <button onclick="javascript:reimposta();">Reimposta</button><br />
+      Costo totale: <input type="text" id="risultato" disabled>
+    </div>
+  </body>
+</html>
